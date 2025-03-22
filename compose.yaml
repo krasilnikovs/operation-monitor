@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - 8080:3000
+    networks:
+      - operation-monitor
+    volumes:
+      - .:/app
+
+networks:
+  operation-monitor:
+    driver: bridge
+    name: operation-monitor
+
+volumes:
+  database_data:
