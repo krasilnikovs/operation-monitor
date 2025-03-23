@@ -16,11 +16,11 @@ var (
 )
 
 type getServiceById struct {
-	repo        repository.Service
+	repo        repository.ServiceRepository
 	transformer transformer.Service
 }
 
-func NewGetServiceById(repo repository.Service) getServiceById {
+func NewGetServiceById(repo repository.ServiceRepository) getServiceById {
 	return getServiceById{repo: repo}
 }
 
