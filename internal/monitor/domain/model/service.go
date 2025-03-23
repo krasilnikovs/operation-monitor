@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"net/url"
 
 	"github.com/google/uuid"
@@ -8,6 +9,7 @@ import (
 
 const (
 	OperationalStatus operationStatus = "operational"
+	PendingStatus     operationStatus = "pending"
 	DegradatedStatus  operationStatus = "degradated"
 )
 
@@ -28,6 +30,16 @@ func (s ServiceId) String() string {
 }
 
 type Url url.URL
+
+func NewUrl(value string) (Url, error) {
+	parsedUrl, err := url.Parse(value)
+
+	if err != nil {
+		return Url{}, fmt.Errorf("invalid url")
+	}
+
+	return Url(*parsedUrl), nil
+}
 
 func (u Url) String() string {
 	url := url.URL(u)
