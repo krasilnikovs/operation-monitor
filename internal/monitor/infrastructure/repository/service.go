@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 )
 
 type Service struct {
@@ -14,7 +15,7 @@ func NewServiceRepository(data []model.Service) Service {
 	return Service{data: data}
 }
 
-func (s Service) ById(ctx context.Context, id model.ServiceId) (*model.Service, error) {
+func (s Service) ById(ctx context.Context, id types.ServiceId) (*model.Service, error) {
 
 	defer ctx.Done()
 

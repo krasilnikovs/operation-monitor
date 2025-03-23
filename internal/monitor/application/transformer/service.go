@@ -14,7 +14,7 @@ func NewServiceTransformer() Service {
 func (s Service) ToDto(model model.Service) dto.Service {
 	return dto.Service{
 		Id:        model.GetId().String(),
-		Name:      model.GetName(),
+		Provider:  model.GetProvider().String(),
 		Status:    model.GetStatus().String(),
 		Reference: model.GetReference().String(),
 	}

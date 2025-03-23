@@ -1,112 +1,57 @@
 package model
 
 import (
-	"fmt"
-	"net/url"
-
-	"github.com/google/uuid"
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 )
-
-const (
-	OperationalStatus operationStatus = "operational"
-	PendingStatus     operationStatus = "pending"
-	DegradatedStatus  operationStatus = "degradated"
-)
-
-type ServiceId uuid.UUID
-
-func NewServiceId(id string) (ServiceId, error) {
-	uid, err := uuid.Parse(id)
-
-	if err != nil {
-		return ServiceId{}, err
-	}
-
-	return ServiceId(uid), nil
-}
-
-func (s ServiceId) String() string {
-	return uuid.UUID(s).String()
-}
-
-type Url url.URL
-
-func NewUrl(value string) (Url, error) {
-	parsedUrl, err := url.Parse(value)
-
-	if err != nil {
-		return Url{}, fmt.Errorf("invalid url")
-	}
-
-	return Url(*parsedUrl), nil
-}
-
-func (u Url) String() string {
-	url := url.URL(u)
-
-	return url.String()
-}
-
-type operationStatus string
-
-func (o operationStatus) String() string {
-	return string(o)
-}
 
 type Service struct {
-	id        ServiceId
-	name      string
-	status    operationStatus
-	reference Url
-	endpoint  Endpoint
+	id        types.ServiceId
+	provider  types.ServiceProvider
+	status    types.OperationStatus
+	reference types.Url
 }
 
-func NewService(id ServiceId, name string, reference Url, status operationStatus, endpoint Endpoint) Service {
+func NewService(id types.ServiceId, provider types.ServiceProvider, reference types.Url, status types.OperationStatus) Service {
 	return Service{
 		id:        id,
-		name:      name,
+		provider:  provider,
 		status:    status,
 		reference: reference,
-		endpoint:  endpoint,
 	}
 }
 
-func (s Service) GetId() ServiceId {
+func (s Service) GetId() types.ServiceId {
 	return s.id
 }
 
-func (s Service) IsSameId(id ServiceId) bool {
+func (s Service) IsSameId(id types.ServiceId) bool {
 	return s.id == id
 }
 
-func (s Service) GetName() string {
-	return s.name
+func (s Service) GetProvider() types.ServiceProvider {
+	return s.provider
 }
 
-func (s Service) GetStatus() operationStatus {
+func (s Service) GetStatus() types.OperationStatus {
 	return s.status
 }
 
-func (s Service) GetReference() Url {
+func (s Service) GetReference() types.Url {
 	return s.reference
 }
 
-func (s Service) GetEndpoint() Endpoint {
-	return s.endpoint
-}
-
 func (s *Service) Degradate() {
-	if s.status == DegradatedStatus {
+	if s.status == types.DegradatedStatus {
 		return
 	}
 
-	s.status = DegradatedStatus
+	s.status = types.DegradatedStatus
 }
 
 func (s *Service) Operate() {
-	if s.status == OperationalStatus {
+	if s.status == types.OperationalStatus {
 		return
 	}
 
-	s.status = OperationalStatus
+	s.status = types.OperationalStatus
 }

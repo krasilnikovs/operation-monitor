@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"krasilnikovs.lv/operation-monitor/configs"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/application/handler"
-	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/infrastructure/repository"
 )
 
@@ -18,7 +18,7 @@ func GetServiceById(w http.ResponseWriter, r *http.Request) {
 		repository.NewServiceRepository(configs.GetMonitoringServices()),
 	)
 
-	serviceId, err := model.NewServiceId(chi.URLParam(r, "serviceId"))
+	serviceId, err := types.NewServiceId(chi.URLParam(r, "serviceId"))
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -2,6 +2,7 @@ package configs
 
 import (
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 )
 
 func GetMonitoringServices() []model.Service {
@@ -11,18 +12,13 @@ func GetMonitoringServices() []model.Service {
 }
 
 func messente() model.Service {
-	id, _ := model.NewServiceId("0195bf98-9f36-7a71-91e3-ded76ada3edb")
-	reference, _ := model.NewUrl("https://messente.com")
-	uri, _ := model.NewUrl("https://status.messente.com/api/v2/status.json")
+	id, _ := types.NewServiceId("0195bf98-9f36-7a71-91e3-ded76ada3edb")
+	reference, _ := types.NewUrl("https://messente.com")
 
 	return model.NewService(
 		id,
-		"Messente",
+		types.MessenteServiceProvider,
 		reference,
-		model.PendingStatus,
-		model.NewEndpoint(
-			uri,
-			model.ApplicationJsonType,
-		),
+		types.PendingStatus,
 	)
 }

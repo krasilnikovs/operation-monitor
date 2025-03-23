@@ -2,7 +2,7 @@ root = "/app"
 tmp_dir = "/app/tmp"
 
 [build]
-cmd = "go build -o /app/tmp ./cmd/serve.go"
+cmd = "go build -o /app/tmp ./cmd/serve/main.go"
 bin = "/app/tmp/serve"
 full_bin = "/app/tmp/serve"
 exclude_dir = ["vendor"]

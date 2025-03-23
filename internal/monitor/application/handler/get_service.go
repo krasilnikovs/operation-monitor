@@ -7,8 +7,8 @@ import (
 
 	"krasilnikovs.lv/operation-monitor/internal/monitor/application/dto"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/application/transformer"
-	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/repository"
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 )
 
 var (
@@ -24,7 +24,7 @@ func NewGetServiceById(repo repository.Service) getServiceById {
 	return getServiceById{repo: repo}
 }
 
-func (h getServiceById) Execute(id model.ServiceId) (dto.Service, error) {
+func (h getServiceById) Execute(id types.ServiceId) (dto.Service, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*30))
 
 	defer cancel()
