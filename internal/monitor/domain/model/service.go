@@ -48,6 +48,14 @@ func (s *Service) Degradate() {
 	s.status = types.DegradatedStatus
 }
 
+func (s *Service) Pending() {
+	if s.status == types.PendingStatus {
+		return
+	}
+
+	s.status = types.PendingStatus
+}
+
 func (s *Service) Operate() {
 	if s.status == types.OperationalStatus {
 		return

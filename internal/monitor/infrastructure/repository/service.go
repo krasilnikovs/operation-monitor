@@ -7,15 +7,15 @@ import (
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
 )
 
-type Service struct {
+type ServiceRepository struct {
 	data []model.Service
 }
 
-func NewServiceRepository(data []model.Service) Service {
-	return Service{data: data}
+func NewServiceRepository(data []model.Service) ServiceRepository {
+	return ServiceRepository{data: data}
 }
 
-func (s Service) ById(ctx context.Context, id types.ServiceId) (*model.Service, error) {
+func (s ServiceRepository) ById(ctx context.Context, id types.ServiceId) (*model.Service, error) {
 
 	defer ctx.Done()
 
@@ -26,4 +26,24 @@ func (s Service) ById(ctx context.Context, id types.ServiceId) (*model.Service, 
 	}
 
 	return nil, nil
+}
+
+func (s ServiceRepository) FetchAll(ctx context.Context) []model.Service {
+	defer ctx.Done()
+
+	return s.data
+}
+
+func (s ServiceRepository) Save(m model.Service) {
+	for index, service := range s.data {
+		if !m.IsSameId(service.GetId()) {
+			continue
+		}
+
+		if m == service {
+			continue
+		}
+
+		s.data[index] = m
+	}
 }

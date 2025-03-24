@@ -8,5 +8,7 @@ import (
 )
 
 type ServiceRepository interface {
-	ById(ctx context.Context, id types.ServiceId) (*model.Service, error)
+	ById(context.Context, types.ServiceId) (*model.Service, error)
+	FetchAll(context.Context) []model.Service
+	Save(model.Service)
 }

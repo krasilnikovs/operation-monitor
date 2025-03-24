@@ -7,17 +7,19 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
-	"krasilnikovs.lv/operation-monitor/configs"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/application/handler"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/types"
-	"krasilnikovs.lv/operation-monitor/internal/monitor/infrastructure/repository"
 )
 
-func GetServiceById(w http.ResponseWriter, r *http.Request) {
-	h := handler.NewGetServiceById(
-		repository.NewServiceRepository(configs.GetMonitoringServices()),
-	)
+type GetServiceByIdAction struct {
+	handler handler.GetServiceById
+}
 
+func NewGetServiceByIdAction(handler handler.GetServiceById) GetServiceByIdAction {
+	return GetServiceByIdAction{handler: handler}
+}
+
+func (a GetServiceByIdAction) Invoke(w http.ResponseWriter, r *http.Request) {
 	serviceId, err := types.NewServiceId(chi.URLParam(r, "serviceId"))
 
 	if err != nil {
@@ -26,7 +28,7 @@ func GetServiceById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dto, err := h.Execute(serviceId)
+	dto, err := a.handler.Execute(serviceId)
 
 	if err == handler.ErrServiceNotFound {
 		w.WriteHeader(http.StatusNotFound)

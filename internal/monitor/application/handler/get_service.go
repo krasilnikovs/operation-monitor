@@ -15,16 +15,16 @@ var (
 	ErrServiceNotFound = fmt.Errorf("service is not found")
 )
 
-type getServiceById struct {
+type GetServiceById struct {
 	repo        repository.ServiceRepository
 	transformer transformer.Service
 }
 
-func NewGetServiceById(repo repository.ServiceRepository) getServiceById {
-	return getServiceById{repo: repo}
+func NewGetServiceById(repo repository.ServiceRepository) GetServiceById {
+	return GetServiceById{repo: repo}
 }
 
-func (h getServiceById) Execute(id types.ServiceId) (dto.Service, error) {
+func (h GetServiceById) Execute(id types.ServiceId) (dto.Service, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*30))
 
 	defer cancel()

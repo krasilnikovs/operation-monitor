@@ -2,20 +2,25 @@ package kernel
 
 import (
 	"log"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 )
 
+var serviceContainer *ServiceContainer = nil
+
 func Load() {
 	loadDotEnv()
 }
 
-func LoadWeb(routes []RouteRegister) *chi.Mux {
+func LoadWeb() *chi.Mux {
 	loadDotEnv()
+	loadServiceContainer()
+	loadJobs()
 
-	return loadRoutes(routes)
+	return loadRoutes()
 }
 
 func loadDotEnv() {
@@ -28,7 +33,14 @@ func loadDotEnv() {
 	godotenv.Overload(".env.local")
 }
 
-func loadRoutes(routes []RouteRegister) *chi.Mux {
+func loadServiceContainer() {
+	if serviceContainer == nil {
+		conrainer := NewServiceContainer()
+		serviceContainer = &conrainer
+	}
+}
+
+func loadRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -36,9 +48,23 @@ func loadRoutes(routes []RouteRegister) *chi.Mux {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Recoverer)
 
-	routeRegister := NewDefaultRouteRegister(routes)
+	routeRegister := NewDefaultRouteRegister(serviceContainer.ProvideRouteRegisters())
 
 	routeRegister.Register(r)
 
 	return r
+}
+
+func loadJobs() {
+	h := serviceContainer.ProvideNewUptimeStatusSyncHandler()
+
+	ticker := time.NewTicker(time.Duration(time.Second * 3))
+
+	go func() {
+		for {
+			<-ticker.C
+
+			h.Execute()
+		}
+	}()
 }

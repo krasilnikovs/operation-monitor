@@ -10,6 +10,7 @@ services:
       - operation-monitor
     volumes:
       - .:/app
+    tty: true
 
 networks:
   operation-monitor:

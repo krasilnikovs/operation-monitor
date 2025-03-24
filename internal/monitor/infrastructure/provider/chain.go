@@ -2,21 +2,17 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
-)
-
-var (
-	ErrProviderIsNotSupported = fmt.Errorf("provider not supported")
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/provider"
 )
 
 type ChainUptimeProvider struct {
-	providers []UptimeProvider
+	providers []provider.UptimeProvider
 }
 
-func NewChainUptimeProvider(providers []UptimeProvider) ChainUptimeProvider {
+func NewChainUptimeProvider(providers []provider.UptimeProvider) ChainUptimeProvider {
 	return ChainUptimeProvider{providers: providers}
 }
 
@@ -43,5 +39,5 @@ func (p ChainUptimeProvider) IsUp(ctx context.Context, m model.Service) (bool, e
 		return provider.IsUp(ctx, m)
 	}
 
-	return false, ErrProviderIsNotSupported
+	return false, provider.ErrProviderIsNotSupported
 }
