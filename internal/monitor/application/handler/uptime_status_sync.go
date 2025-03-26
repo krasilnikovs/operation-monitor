@@ -2,10 +2,10 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
+	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/model"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/provider"
 	"krasilnikovs.lv/operation-monitor/internal/monitor/domain/repository"
 )
@@ -20,7 +20,6 @@ func NewUptimeStatusSync(repo repository.ServiceRepository, uptimeProvider provi
 }
 
 func (uss UptimeStatusSync) Execute() {
-	fmt.Println("SYNC LAUNCH")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*30))
 
 	defer cancel()
@@ -29,40 +28,42 @@ func (uss UptimeStatusSync) Execute() {
 	var wg sync.WaitGroup
 
 	for _, service := range services {
-		if !uss.uptimeProvider.Supports(service) {
+		if !uss.uptimeProvider.Supports(*service) {
 			continue
 		}
 
 		wg.Add(1)
 
 		go func() {
-
-			defer wg.Done()
-
 			ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*30))
 
+			defer wg.Done()
 			defer cancel()
 
-			isUp, err := uss.uptimeProvider.IsUp(ctx, service)
-
-			if err != nil {
-				service.Pending()
-				return
-			}
-
-			if isUp {
-				service.Operate()
-			}
-
-			if !isUp {
-				service.Degradate()
-			}
+			uss.sync(ctx, service)
 		}()
-
-		wg.Wait()
-
-		for _, service := range services {
-			uss.repo.Save(service)
-		}
 	}
+
+	wg.Wait()
+}
+
+func (uss *UptimeStatusSync) sync(ctx context.Context, service *model.Service) {
+
+	isUp, err := uss.uptimeProvider.IsUp(ctx, *service)
+
+	if err != nil {
+		service.Degradate()
+		uss.repo.Save(service)
+		return
+	}
+
+	if isUp {
+		service.Operate()
+	}
+
+	if !isUp {
+		service.Degradate()
+	}
+
+	uss.repo.Save(service)
 }

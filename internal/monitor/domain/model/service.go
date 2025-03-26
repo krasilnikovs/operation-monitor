@@ -25,7 +25,7 @@ func (s Service) GetId() types.ServiceId {
 }
 
 func (s Service) IsSameId(id types.ServiceId) bool {
-	return s.id == id
+	return s.id.String() == id.String()
 }
 
 func (s Service) GetProvider() types.ServiceProvider {

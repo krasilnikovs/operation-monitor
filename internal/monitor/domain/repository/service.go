@@ -9,6 +9,6 @@ import (
 
 type ServiceRepository interface {
 	ById(context.Context, types.ServiceId) (*model.Service, error)
-	FetchAll(context.Context) []model.Service
-	Save(model.Service)
+	FetchAll(context.Context) []*model.Service
+	Save(*model.Service)
 }

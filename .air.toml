@@ -3,10 +3,10 @@ tmp_dir = "/app/tmp"
 
 [build]
 cmd = "go build -o /app/tmp ./cmd/serve/main.go"
-bin = "/app/tmp/serve"
-full_bin = "/app/tmp/serve"
+bin = "/app/tmp/main"
+full_bin = "/app/tmp/main"
 exclude_dir = ["vendor"]
 
 # Custom command to run the web server
 [runner]
-cmd = "/app/tmp/serve"  # Change this to your specific command
+cmd = "/app/tmp/main"  # Change this to your specific command
